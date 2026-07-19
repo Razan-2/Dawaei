@@ -40,5 +40,14 @@ const Dawaei = {
   set(key, value) {
     localStorage.setItem(key, JSON.stringify(value));
   },
+  isLoggedIn() {
+    return Boolean(localStorage.getItem('dawaeiUser'));
+  },
   id() { return `${Date.now()}-${Math.random().toString(16).slice(2)}`; }
 };
+
+// تبدأ جميع صفحات الموقع بتسجيل الدخول، باستثناء صفحة الدخول نفسها.
+const currentPage = window.location.pathname.split('/').pop().toLowerCase();
+if (!Dawaei.isLoggedIn() && currentPage !== 'login.html') {
+  window.location.replace('login.html');
+}
