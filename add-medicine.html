@@ -50,14 +50,16 @@ form.addEventListener('submit', async event => {
       enabled: true
     });
     Dawaei.set('medicines', medicines);
-    try {
-      await Dawaei.enableAlarms();
-    } catch (alarmError) {
-      console.error('تعذر تفعيل صوت التنبيه.', alarmError);
+    if (localStorage.getItem('dawaeiAlarmsDisabledByUser') !== 'true') {
+      try {
+        await Dawaei.enableAlarms();
+      } catch (alarmError) {
+        console.error('تعذر تفعيل صوت التنبيه.', alarmError);
+      }
     }
     form.reset();
     noticeTitle.textContent = 'تمت إضافة الدواء بنجاح';
-    noticeMessage.textContent = 'تم تفعيل التنبيه الصوتي أيضًا. ستجد الدواء الآن في صفحة مواعيدي والتذكيرات.';
+    noticeMessage.textContent = 'ستجد الدواء الآن في صفحة مواعيدي والتذكيرات.';
     notice.classList.remove('error');
   } catch (error) {
     noticeTitle.textContent = 'تعذر حفظ الدواء';

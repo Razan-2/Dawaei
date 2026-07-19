@@ -34,13 +34,17 @@
 
     function showAlarmStatus() {
       const enabled = localStorage.getItem('dawaeiAlarmsEnabled') === 'true';
-      alarmButton.textContent = enabled ? 'التنبيه الصوتي مفعّل' : 'تفعيل التنبيه الصوتي';
-      alarmStatus.textContent = enabled ? 'سيصدر صوت المنبّه عند حلول مواعيد الأدوية اليومية أثناء فتح الموقع.' : 'فعّل التنبيه ليصدر صوت عند حلول موعد الدواء.';
+      alarmButton.textContent = enabled ? 'إيقاف التنبيه الصوتي' : 'تفعيل التنبيه الصوتي';
+      alarmStatus.textContent = enabled ? 'التنبيه الصوتي مفعّل. اضغط الزر لإيقافه.' : 'التنبيه الصوتي متوقف. اضغط الزر لتفعيله.';
     }
 
     alarmButton.addEventListener('click', async () => {
       try {
-        await Dawaei.enableAlarms();
+        if (localStorage.getItem('dawaeiAlarmsEnabled') === 'true') {
+          await Dawaei.disableAlarms();
+        } else {
+          await Dawaei.enableAlarms();
+        }
         showAlarmStatus();
       } catch (error) {
         alarmStatus.textContent = 'تعذر تفعيل الصوت. تحقق من أذونات المتصفح ثم حاول مجددًا.';

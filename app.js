@@ -64,6 +64,7 @@ const Dawaei = {
   alertedReminders: new Set(),
   async enableAlarms() {
     localStorage.setItem('dawaeiAlarmsEnabled', 'true');
+    localStorage.removeItem('dawaeiAlarmsDisabledByUser');
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     if (AudioContextClass) {
       this.alarmContext = this.alarmContext || new AudioContextClass();
@@ -71,6 +72,13 @@ const Dawaei = {
     }
     if ('Notification' in window && Notification.permission === 'default') {
       await Notification.requestPermission();
+    }
+  },
+  async disableAlarms() {
+    localStorage.setItem('dawaeiAlarmsEnabled', 'false');
+    localStorage.setItem('dawaeiAlarmsDisabledByUser', 'true');
+    if (this.alarmContext && this.alarmContext.state === 'running') {
+      await this.alarmContext.suspend();
     }
   },
   async playAlarm() {
