@@ -8,6 +8,7 @@
 <title>اتصل بنا | دوائي</title>
 
 <style>
+
 *{
     margin:0;
     padding:0;
@@ -17,75 +18,135 @@
 
 body{
     background:#f5f7fa;
+    min-height:100vh;
+}
+
+/* مكان ظهور الهيدر */
+#header-container{
+    width:100%;
+}
+
+/* إضافة مسافة بعد الهيدر */
+.page-content{
+    padding-top:60px;
 }
 
 .container{
     max-width:700px;
-    margin:60px auto;
+    margin:0 auto 60px;
     background:#fff;
     padding:40px;
-    border-radius:15px;
-    box-shadow:0 10px 25px rgba(0,0,0,.08);
+    border-radius:18px;
+    box-shadow:0 12px 30px rgba(0,0,0,.08);
 }
 
 h1{
+    text-align:center;
     color:#0d3b66;
+    font-size:38px;
     margin-bottom:15px;
 }
 
 p{
+    text-align:center;
     color:#666;
-    margin-bottom:25px;
+    font-size:17px;
+    line-height:1.8;
+    margin-bottom:35px;
 }
 
 input,
 textarea{
     width:100%;
-    padding:15px;
-    margin-bottom:18px;
+    padding:16px;
+    margin-bottom:20px;
     border:1px solid #ddd;
     border-radius:10px;
     font-size:16px;
+    outline:none;
+    transition:.3s;
+}
+
+input:focus,
+textarea:focus{
+    border-color:#009688;
+    box-shadow:0 0 10px rgba(0,150,136,.15);
 }
 
 textarea{
-    height:170px;
+    height:180px;
     resize:none;
 }
 
 button{
     width:100%;
-    padding:15px;
-    background:#009688;
-    color:#fff;
+    padding:16px;
     border:none;
     border-radius:10px;
-    font-size:17px;
+    background:#009688;
+    color:#fff;
+    font-size:18px;
     cursor:pointer;
+    transition:.3s;
 }
 
 button:hover{
     background:#00796b;
 }
+
+@media(max-width:768px){
+
+.page-content{
+    padding-top:25px;
+}
+
+.container{
+    width:92%;
+    padding:25px;
+    margin:0 auto 40px;
+}
+
+h1{
+    font-size:30px;
+}
+
+}
+
 </style>
 
 </head>
 
 <body>
 
+<!-- الهيدر -->
+<div id="header-container"></div>
+
+<!-- محتوى الصفحة -->
+<div class="page-content">
+
 <div class="container">
 
 <h1>اتصل بنا</h1>
 
-<p>يسعدنا استقبال استفساراتكم وملاحظاتكم.</p>
+<p>
+يسعدنا استقبال استفساراتكم وملاحظاتكم، وسنقوم بالرد عليكم في أقرب وقت ممكن.
+</p>
 
 <form>
 
-<input type="text" placeholder="الاسم الكامل" required>
+<input
+type="text"
+placeholder="الاسم الكامل"
+required>
 
-<input type="email" placeholder="البريد الإلكتروني" required>
+<input
+type="email"
+placeholder="البريد الإلكتروني"
+required>
 
-<textarea placeholder="اكتب رسالتك..." required></textarea>
+<textarea
+placeholder="اكتب رسالتك هنا..."
+required></textarea>
 
 <button type="submit">
 إرسال
@@ -95,5 +156,18 @@ button:hover{
 
 </div>
 
+</div>
+
+<script src="app.js"></script>
+<script>
+Dawaei.loadHeader('header-container');
+document.querySelector('form').addEventListener('submit', event => {
+    event.preventDefault();
+    event.currentTarget.reset();
+    alert('تم إرسال رسالتك بنجاح. شكرًا لتواصلك معنا.');
+});
+</script>
+
 </body>
-</html>
+
+</html>س

@@ -283,14 +283,11 @@ font-size:18px;
 
 <div id="footer"></div>
 
+<script src="app.js"></script>
 <script>
 
 /* تحميل الهيدر */
-fetch("header.html")
-.then(response => response.text())
-.then(data => {
-document.getElementById("header").innerHTML = data;
-});
+Dawaei.loadHeader();
 
 /* تحميل الفوتر */
 fetch("footer.html")
