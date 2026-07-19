@@ -1,4 +1,42 @@
 <!doctype html>
 <html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>إضافة دواء | دوائي</title>
-<style>body{margin:0;background:#f5f7fa;color:#243746;font-family:'Segoe UI',Tahoma,sans-serif}.page{max-width:720px;margin:55px auto;padding:0 20px}.panel{background:#fff;padding:34px;border-radius:8px;box-shadow:0 12px 30px #00000012}h1{color:#0d3b66;margin:0 0 10px}p{color:#667085;line-height:1.7}label{display:block;margin:20px 0 7px;font-weight:600}input,select{width:100%;padding:13px;border:1px solid #d0d5dd;border-radius:7px;font:inherit}button{margin-top:26px;width:100%;padding:14px;border:0;border-radius:7px;background:#009688;color:#fff;font:inherit;font-weight:bold;cursor:pointer}.notice{display:none;margin-top:18px;padding:12px;background:#e7f6f3;color:#08665c;border-radius:7px}</style></head>
-<body><div id="header"></div><main class="page"><section class="panel"><h1>إضافة دواء</h1><p>سجّل الدواء وموعد الجرعة، وسيظهر مباشرة في مواعيدك وتذكيراتك.</p><form id="medicine-form"><label for="name">اسم الدواء</label><input id="name" required placeholder="مثال: فيتامين د"><label for="dose">الجرعة</label><input id="dose" required placeholder="مثال: حبة واحدة"><label for="time">وقت التذكير</label><input id="time" type="time" required><label for="frequency">التكرار</label><select id="frequency"><option>يوميًا</option><option>أسبوعيًا</option><option>عند الحاجة</option></select><button type="submit">حفظ الدواء</button></form><div class="notice" id="notice">تم حفظ الدواء بنجاح.</div></section></main><script src="app.js"></script><script>Dawaei.loadHeader();document.getElementById('medicine-form').addEventListener('submit',e=>{e.preventDefault();const meds=Dawaei.get('medicines');meds.push({id:Dawaei.id(),name:name.value.trim(),dose:dose.value.trim(),time:time.value,frequency:frequency.value,enabled:true});Dawaei.set('medicines',meds);e.currentTarget.reset();notice.style.display='block';});</script></body></html>
+<style>body{margin:0;background:#f5f7fa;color:#243746;font-family:'Segoe UI',Tahoma,sans-serif}.page{max-width:720px;margin:55px auto;padding:0 20px}.panel{background:#fff;padding:34px;border-radius:8px;box-shadow:0 12px 30px #00000012}h1{color:#0d3b66;margin:0 0 10px}p{color:#667085;line-height:1.7}label{display:block;margin:20px 0 7px;font-weight:600}input,select{box-sizing:border-box;width:100%;padding:13px;border:1px solid #d0d5dd;border-radius:7px;font:inherit}button{margin-top:26px;width:100%;padding:14px;border:0;border-radius:7px;background:#009688;color:#fff;font:inherit;font-weight:bold;cursor:pointer}button:disabled{cursor:wait;opacity:.7}.notice{display:none;margin-top:18px;padding:12px;background:#e7f6f3;color:#08665c;border-radius:7px}.notice.error{background:#fff1f0;color:#b42318}</style></head>
+<body><div id="header"></div><main class="page"><section class="panel"><h1>إضافة دواء</h1><p>سجّل الدواء وموعد الجرعة، وسيظهر مباشرة في مواعيدك وتذكيراتك.</p><form id="medicine-form"><label for="name">اسم الدواء</label><input id="name" required placeholder="مثال: فيتامين د" autocomplete="off"><label for="dose">الجرعة</label><input id="dose" required placeholder="مثال: حبة واحدة" autocomplete="off"><label for="time">وقت التذكير</label><input id="time" type="time" required><label for="frequency">التكرار</label><select id="frequency"><option>يوميًا</option><option>أسبوعيًا</option><option>عند الحاجة</option></select><button id="save-medicine" type="submit">حفظ الدواء</button></form><div class="notice" id="notice" role="status" aria-live="polite"></div></section></main><script src="app.js"></script><script>
+Dawaei.loadHeader();
+
+const form = document.getElementById('medicine-form');
+const nameInput = document.getElementById('name');
+const doseInput = document.getElementById('dose');
+const timeInput = document.getElementById('time');
+const frequencyInput = document.getElementById('frequency');
+const saveButton = document.getElementById('save-medicine');
+const notice = document.getElementById('notice');
+
+form.addEventListener('submit', event => {
+  event.preventDefault();
+  if (!form.reportValidity()) return;
+
+  saveButton.disabled = true;
+  try {
+    const medicines = Dawaei.get('medicines');
+    medicines.push({
+      id: Dawaei.id(),
+      name: nameInput.value.trim(),
+      dose: doseInput.value.trim(),
+      time: timeInput.value,
+      frequency: frequencyInput.value,
+      enabled: true
+    });
+    Dawaei.set('medicines', medicines);
+    form.reset();
+    notice.textContent = 'تم حفظ الدواء بنجاح. ستجده في صفحة مواعيدي وتذكيراتي.';
+    notice.classList.remove('error');
+  } catch (error) {
+    notice.textContent = 'تعذر حفظ الدواء. تأكد من السماح بالتخزين المحلي في المتصفح ثم حاول مرة أخرى.';
+    notice.classList.add('error');
+  } finally {
+    notice.style.display = 'block';
+    saveButton.disabled = false;
+  }
+});
+</script></body></html>

@@ -29,7 +29,16 @@ const Dawaei = {
       topButton.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
     }).catch(error => console.error(error));
   },
-  get(key) { return JSON.parse(localStorage.getItem(key) || '[]'); },
-  set(key, value) { localStorage.setItem(key, JSON.stringify(value)); },
+  get(key) {
+    try {
+      const value = JSON.parse(localStorage.getItem(key) || '[]');
+      return Array.isArray(value) ? value : [];
+    } catch {
+      return [];
+    }
+  },
+  set(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+  },
   id() { return `${Date.now()}-${Math.random().toString(16).slice(2)}`; }
 };
