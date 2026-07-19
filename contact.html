@@ -94,16 +94,6 @@ button:hover{
     background:#00796b;
 }
 
-.send-status{
-    display:none;
-    margin-top:18px;
-    padding:13px;
-    border-radius:10px;
-    background:#e7f6f3;
-    color:#08665c;
-    text-align:center;
-}
-
 @media(max-width:768px){
 
 .page-content{
@@ -139,25 +129,31 @@ h1{
 <h1>تواصل مع دكتورك الخاص</h1>
 
 <p>
-أرسل استفسارك إلى دكتورك الخاص، وسيتم فتح رسالة بريد جاهزة للإرسال.
+أرسل استفسارك إلى دكتورك الخاص، وستصل الرسالة مباشرةً إلى البريد الإلكتروني.
 </p>
 
-<form id="doctor-contact-form">
+<form id="doctor-contact-form" action="https://formsubmit.co/razanalqobti@gmail.com" method="POST">
+
+<input type="hidden" name="_subject" value="استفسار جديد عبر موقع دوائي">
+<input type="hidden" name="_template" value="table">
 
 <input
 id="sender-name"
+name="name"
 type="text"
 placeholder="الاسم الكامل"
 required>
 
 <input
 id="sender-email"
+name="email"
 type="email"
 placeholder="البريد الإلكتروني"
 required>
 
 <textarea
 id="sender-message"
+name="message"
 placeholder="اكتب رسالتك هنا..."
 required></textarea>
 
@@ -166,7 +162,6 @@ required></textarea>
 </button>
 
 </form>
-<div id="send-status" class="send-status" role="status" aria-live="polite"></div>
 
 </div>
 
@@ -175,22 +170,6 @@ required></textarea>
 <script src="app.js"></script>
 <script>
 Dawaei.loadHeader('header-container');
-document.getElementById('doctor-contact-form').addEventListener('submit', event => {
-    event.preventDefault();
-
-    const senderName = document.getElementById('sender-name').value.trim();
-    const senderEmail = document.getElementById('sender-email').value.trim();
-    const senderMessage = document.getElementById('sender-message').value.trim();
-    const subject = `رسالة جديدة من ${senderName} عبر دوائي`;
-    const body = `الاسم: ${senderName}\nالبريد الإلكتروني: ${senderEmail}\n\nالرسالة:\n${senderMessage}`;
-    const recipient = 'razanalqobti@gmail.com';
-
-    window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-    const status = document.getElementById('send-status');
-    status.textContent = 'تم فتح رسالة بريد جاهزة. اضغط «إرسال» في تطبيق البريد لإيصالها إلى دكتورك.';
-    status.style.display = 'block';
-});
 </script>
 
 </body>

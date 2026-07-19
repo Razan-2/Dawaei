@@ -1,2 +1,78 @@
 <!doctype html>
-<html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>مواعيدي | دوائي</title><style>body{margin:0;background:#f5f7fa;color:#243746;font-family:'Segoe UI',Tahoma,sans-serif}.page{max-width:900px;margin:55px auto;padding:0 20px}h1{color:#0d3b66}.list{display:grid;gap:14px}.item{display:flex;align-items:center;justify-content:space-between;gap:20px;background:#fff;border-radius:8px;padding:20px;box-shadow:0 5px 16px #0000000d}.item h2{font-size:19px;margin:0 0 7px;color:#0d3b66}.item p{margin:0;color:#667085}.time{font-weight:bold;color:#009688;font-size:20px}.delete{border:0;background:#fff1f0;color:#b42318;border-radius:6px;padding:9px 12px;cursor:pointer}.empty{background:#fff;padding:30px;text-align:center;border-radius:8px;color:#667085}@media(max-width:560px){.item{align-items:flex-start;flex-wrap:wrap}.time{margin-left:auto}}</style></head><body><div id="header"></div><main class="page"><h1>مواعيدي</h1><div class="list" id="list"></div></main><script src="app.js"></script><script>Dawaei.loadHeader();function render(){const meds=Dawaei.get('medicines'),list=document.getElementById('list');list.innerHTML=meds.length?meds.map(m=>`<article class="item"><div><h2>${m.name}</h2><p>${m.dose} · ${m.frequency}</p></div><div class="time">${m.time}</div><button class="delete" data-id="${m.id}">حذف</button></article>`).join(''):'<div class="empty">لا توجد أدوية مسجلة حاليًا. أضف دواءً لتظهر مواعيده هنا.</div>';list.querySelectorAll('.delete').forEach(b=>b.onclick=()=>{Dawaei.set('medicines',Dawaei.get('medicines').filter(m=>m.id!==b.dataset.id));render();});}render();</script></body></html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>مواعيدي | دوائي</title>
+  <style>
+    body{margin:0;background:#f5f7fa;color:#243746;font-family:'Segoe UI',Tahoma,sans-serif}
+    .page{max-width:900px;margin:55px auto;padding:0 20px}h1{color:#0d3b66}.list{display:grid;gap:14px}
+    .item{background:#fff;border-radius:8px;padding:20px;box-shadow:0 5px 16px #0000000d}.item-main{display:flex;align-items:center;justify-content:space-between;gap:20px}.item h2{font-size:19px;margin:0 0 7px;color:#0d3b66}.item p{margin:0;color:#667085}.time{font-weight:bold;color:#009688;font-size:20px}.actions{display:flex;gap:8px;align-items:center}.edit,.delete,.cancel,.save-edit{border:0;border-radius:6px;padding:9px 12px;cursor:pointer;font:inherit}.edit{background:#e7f6f3;color:#08665c}.delete{background:#fff1f0;color:#b42318}.edit-form{display:grid;grid-template-columns:1fr 150px auto auto;gap:10px;align-items:end;margin-top:18px;padding-top:18px;border-top:1px solid #eaecf0}.edit-form label{display:grid;gap:6px;font-weight:600;font-size:14px}.edit-form input{box-sizing:border-box;width:100%;padding:10px;border:1px solid #d0d5dd;border-radius:6px;font:inherit}.save-edit{background:#009688;color:#fff}.cancel{background:#eef2f6;color:#344054}.empty{background:#fff;padding:30px;text-align:center;border-radius:8px;color:#667085}@media(max-width:620px){.item-main{align-items:flex-start;flex-wrap:wrap}.time{margin-left:auto}.edit-form{grid-template-columns:1fr 1fr}.edit-form .save-edit,.edit-form .cancel{width:100%}}
+  </style>
+</head>
+<body>
+  <div id="header"></div>
+  <main class="page">
+    <h1>مواعيدي</h1>
+    <div class="list" id="list"></div>
+  </main>
+  <script src="app.js"></script>
+  <script>
+    Dawaei.loadHeader();
+
+    const list = document.getElementById('list');
+    const escapeHtml = value => String(value).replace(/[&<>'"]/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[character]));
+
+    function render() {
+      const medicines = Dawaei.get('medicines');
+      list.innerHTML = medicines.length ? medicines.map(medicine => `
+        <article class="item">
+          <div class="item-main">
+            <div><h2>${escapeHtml(medicine.name)}</h2><p>${escapeHtml(medicine.dose)} · ${escapeHtml(medicine.frequency)}</p></div>
+            <div class="time">${escapeHtml(medicine.time)}</div>
+            <div class="actions">
+              <button class="edit" type="button" data-edit="${escapeHtml(medicine.id)}">تعديل</button>
+              <button class="delete" type="button" data-delete="${escapeHtml(medicine.id)}">حذف</button>
+            </div>
+          </div>
+          <form class="edit-form" data-form="${escapeHtml(medicine.id)}" hidden>
+            <label>اسم الدواء<input name="name" required value="${escapeHtml(medicine.name)}"></label>
+            <label>وقت التذكير<input name="time" type="time" required value="${escapeHtml(medicine.time)}"></label>
+            <button class="save-edit" type="submit">حفظ التعديل</button>
+            <button class="cancel" type="button">إلغاء</button>
+          </form>
+        </article>`).join('') : '<div class="empty">لا توجد أدوية مسجلة حاليًا. أضف دواءً لتظهر مواعيده هنا.</div>';
+
+      list.querySelectorAll('[data-edit]').forEach(button => button.addEventListener('click', () => {
+        list.querySelectorAll('.edit-form').forEach(form => { form.hidden = true; });
+        const form = list.querySelector(`[data-form="${button.dataset.edit}"]`);
+        form.hidden = false;
+        form.elements.name.focus();
+      }));
+
+      list.querySelectorAll('.cancel').forEach(button => button.addEventListener('click', () => {
+        button.closest('.edit-form').hidden = true;
+      }));
+
+      list.querySelectorAll('[data-delete]').forEach(button => button.addEventListener('click', () => {
+        Dawaei.set('medicines', Dawaei.get('medicines').filter(medicine => medicine.id !== button.dataset.delete));
+        render();
+      }));
+
+      list.querySelectorAll('.edit-form').forEach(form => form.addEventListener('submit', event => {
+        event.preventDefault();
+        if (!form.reportValidity()) return;
+        const medicines = Dawaei.get('medicines');
+        const medicine = medicines.find(item => item.id === form.dataset.form);
+        if (!medicine) return;
+        medicine.name = form.elements.name.value.trim();
+        medicine.time = form.elements.time.value;
+        Dawaei.set('medicines', medicines);
+        render();
+      }));
+    }
+
+    render();
+  </script>
+</body>
+</html>

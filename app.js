@@ -9,11 +9,21 @@ const Dawaei = {
       container.innerHTML = markup;
       const menuButton = container.querySelector('.menu-btn');
       const nav = container.querySelector('.site-nav');
+      const accountLink = container.querySelector('.login-btn');
       menuButton.addEventListener('click', () => {
         const open = nav.classList.toggle('active');
         menuButton.setAttribute('aria-expanded', String(open));
       });
       nav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => nav.classList.remove('active')));
+      if (this.isLoggedIn() && accountLink) {
+        accountLink.textContent = 'تسجيل الخروج';
+        accountLink.href = '#';
+        accountLink.setAttribute('aria-label', 'تسجيل الخروج');
+        accountLink.addEventListener('click', event => {
+          event.preventDefault();
+          this.logout();
+        });
+      }
     }).catch(error => console.error(error));
   },
   loadFooter(containerId = 'footer') {
@@ -43,6 +53,66 @@ const Dawaei = {
   isLoggedIn() {
     return Boolean(localStorage.getItem('dawaeiUser'));
   },
+  logout() {
+    localStorage.removeItem('dawaeiUser');
+    window.location.replace('login.html');
+  },
+  alarmContext: null,
+  alertedReminders: new Set(),
+  async enableAlarms() {
+    localStorage.setItem('dawaeiAlarmsEnabled', 'true');
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (AudioContextClass) {
+      this.alarmContext = this.alarmContext || new AudioContextClass();
+      if (this.alarmContext.state === 'suspended') await this.alarmContext.resume();
+    }
+    if ('Notification' in window && Notification.permission === 'default') {
+      await Notification.requestPermission();
+    }
+  },
+  playAlarm() {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+    const context = this.alarmContext || (this.alarmContext = new AudioContextClass());
+    if (context.state === 'suspended') context.resume();
+
+    [0, .42, .84].forEach((offset, index) => {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = 'square';
+      oscillator.frequency.setValueAtTime(index % 2 ? 740 : 880, context.currentTime + offset);
+      gain.gain.setValueAtTime(0.0001, context.currentTime + offset);
+      gain.gain.exponentialRampToValueAtTime(.22, context.currentTime + offset + .03);
+      gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + offset + .32);
+      oscillator.connect(gain).connect(context.destination);
+      oscillator.start(context.currentTime + offset);
+      oscillator.stop(context.currentTime + offset + .34);
+    });
+  },
+  checkReminders() {
+    if (localStorage.getItem('dawaeiAlarmsEnabled') !== 'true') return;
+    const now = new Date();
+    const currentTime = now.toTimeString().slice(0, 5);
+    const dateKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    this.get('medicines').forEach(medicine => {
+      const isScheduled = medicine.frequency === 'يوميًا' || !medicine.frequency;
+      const reminderKey = `${dateKey}-${medicine.id}-${medicine.time}`;
+      if (!medicine.enabled || !isScheduled || medicine.time !== currentTime || this.alertedReminders.has(reminderKey)) return;
+
+      this.alertedReminders.add(reminderKey);
+      this.playAlarm();
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification('موعد الدواء', {
+          body: `حان الآن موعد ${medicine.name} (${medicine.dose}).`,
+          tag: reminderKey
+        });
+      }
+    });
+  },
+  startReminderMonitoring() {
+    this.checkReminders();
+    window.setInterval(() => this.checkReminders(), 10000);
+  },
   id() { return `${Date.now()}-${Math.random().toString(16).slice(2)}`; }
 };
 
@@ -50,4 +120,6 @@ const Dawaei = {
 const currentPage = window.location.pathname.split('/').pop().toLowerCase();
 if (!Dawaei.isLoggedIn() && currentPage !== 'login.html') {
   window.location.replace('login.html');
+} else if (Dawaei.isLoggedIn()) {
+  Dawaei.startReminderMonitoring();
 }
