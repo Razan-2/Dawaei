@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>دوائي | الصفحة الرئيسية</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',Tahoma,sans-serif;
+scroll-behavior:smooth;
+}
+
+body{
+background:#F7F5F0;
+color:#333;
+overflow-x:hidden;
+}
+
+#header,#footer{
+width:100%;
+}
+
+/* ================= HERO ================= */
+
+.hero{
+position:relative;
+height:100vh;
+display:flex;
+align-items:center;
+overflow:hidden;
+}
+
+.hero video{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+object-fit:cover;
+z-index:-2;
+}
+
+.hero::before{
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:linear-gradient(
+90deg,
+rgba(7,30,52,.90) 20%,
+rgba(7,30,52,.60) 60%,
+rgba(7,30,52,.25) 100%
+);
+z-index:-1;
+}
+
+.hero-content{
+max-width:620px;
+margin-right:8%;
+color:white;
+animation:fadeUp 1s ease;
+}
+
+.hero h1{
+font-size:70px;
+margin-bottom:18px;
+color:#F5E6CC;
+}
+
+.hero p{
+font-size:22px;
+line-height:2;
+margin-bottom:35px;
+color:#f3f3f3;
+}
+
+.buttons{
+display:flex;
+gap:18px;
+flex-wrap:wrap;
+}
+
+.btn{
+padding:16px 36px;
+border:none;
+border-radius:50px;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+transition:.35s;
+}
+
+.primary{
+background:#F5E6CC;
+color:#0B3C5D;
+}
+
+.primary:hover{
+transform:translateY(-5px);
+box-shadow:0 15px 30px rgba(0,0,0,.3);
+}
+
+.secondary{
+background:transparent;
+border:2px solid #F5E6CC;
+color:white;
+}
+
+.secondary:hover{
+background:#F5E6CC;
+color:#0B3C5D;
+}
+
+/* ================= SERVICES ================= */
+
+.services{
+padding:80px 8%;
+}
+
+.section-title{
+text-align:center;
+font-size:42px;
+color:#0B3C5D;
+margin-bottom:50px;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:25px;
+}
+
+.card{
+background:white;
+padding:35px;
+border-radius:20px;
+text-align:center;
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+transition:.35s;
+}
+
+.card:hover{
+transform:translateY(-10px);
+}
+
+.card span{
+font-size:55px;
+display:block;
+margin-bottom:18px;
+}
+
+.card h3{
+color:#0B3C5D;
+margin-bottom:15px;
+}
+
+.card p{
+line-height:1.9;
+color:#666;
+}
+
+/* ================= Animation ================= */
+
+@keyframes fadeUp{
+from{
+opacity:0;
+transform:translateY(40px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+/* ================= Responsive ================= */
+
+@media(max-width:900px){
+
+.hero{
+justify-content:center;
+text-align:center;
+}
+
+.hero-content{
+margin:0 25px;
+}
+
+.buttons{
+justify-content:center;
+}
+
+.hero h1{
+font-size:48px;
+}
+
+.hero p{
+font-size:18px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="header"></div>
+
+<section class="hero">
+
+<video autoplay muted loop playsinline>
+<source src="media/Video1.mp4" type="video/mp4">
+متصفحك لا يدعم تشغيل الفيديو.
+</video>
+
+<div class="hero-content">
+
+<h1>دوائي</h1>
+
+<p>
+منصتك الذكية لإدارة الأدوية وتنظيم الجرعات اليومية، مع تنبيهات دقيقة تساعدك على الالتزام بالخطة العلاجية بسهولة وأمان، أينما كنت.
+</p>
+
+<div class="buttons">
+
+<button class="btn primary">
+ابدأ الآن
+</button>
+
+<button class="btn secondary">
+اعرف المزيد
+</button>
+
+</div>
+
+</div>
+
+</section>
+<section class="services">
+
+<h2 class="section-title">
+لماذا دوائي؟
+</h2>
+
+<div class="cards">
+
+<div class="card">
+<span>💊</span>
+<h3>إدارة الأدوية</h3>
+<p>
+أضف جميع أدويتك وحدد الجرعات وأوقات الاستخدام بطريقة سهلة ومنظمة.
+</p>
+</div>
+
+<div class="card">
+<span>⏰</span>
+<h3>تنبيهات ذكية</h3>
+<p>
+يصلك إشعار في الوقت المحدد لكل جرعة حتى لا تفوت أي موعد.
+</p>
+</div>
+
+<div class="card">
+<span>📊</span>
+<h3>متابعة يومية</h3>
+<p>
+تابع الجرعات التي تناولتها وسجل التزامك بالعلاج بسهولة.
+</p>
+</div>
+
+</div>
+
+</section>
+
+<div id="footer"></div>
+
+<script>
+
+/* تحميل الهيدر */
+fetch("header.html")
+.then(response => response.text())
+.then(data => {
+document.getElementById("header").innerHTML = data;
+});
+
+/* تحميل الفوتر */
+fetch("footer.html")
+.then(response => response.text())
+.then(data => {
+document.getElementById("footer").innerHTML = data;
+});
+
+/* ظهور البطاقات عند التمرير */
+const cards = document.querySelectorAll(".card");
+
+const observer = new IntersectionObserver((entries)=>{
+
+entries.forEach(entry=>{
+
+if(entry.isIntersecting){
+
+entry.target.style.opacity="1";
+entry.target.style.transform="translateY(0)";
+
+}
+
+});
+
+},{threshold:0.2});
+
+cards.forEach(card=>{
+
+card.style.opacity="0";
+card.style.transform="translateY(40px)";
+card.style.transition="all .7s ease";
+
+observer.observe(card);
+
+});
+
+/* تأثير الأزرار */
+
+document.querySelectorAll(".btn").forEach(button=>{
+
+button.addEventListener("mouseenter",()=>{
+
+button.style.transform="translateY(-5px) scale(1.05)";
+
+});
+
+button.addEventListener("mouseleave",()=>{
+
+button.style.transform="translateY(0) scale(1)";
+
+});
+
+});
+
+</script>
+
+</body>
+</html>
