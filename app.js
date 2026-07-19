@@ -84,18 +84,18 @@ const Dawaei = {
       return;
     }
 
-    [0, .42, .84].forEach((offset, index) => {
-      const oscillator = context.createOscillator();
-      const gain = context.createGain();
-      oscillator.type = 'square';
-      oscillator.frequency.setValueAtTime(index % 2 ? 740 : 880, context.currentTime + offset);
-      gain.gain.setValueAtTime(0.0001, context.currentTime + offset);
-      gain.gain.exponentialRampToValueAtTime(.22, context.currentTime + offset + .03);
-      gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + offset + .32);
-      oscillator.connect(gain).connect(context.destination);
-      oscillator.start(context.currentTime + offset);
-      oscillator.stop(context.currentTime + offset + .34);
-    });
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+    const startTime = context.currentTime;
+    oscillator.type = 'square';
+    oscillator.frequency.setValueAtTime(880, startTime);
+    gain.gain.setValueAtTime(0.0001, startTime);
+    gain.gain.exponentialRampToValueAtTime(.22, startTime + .04);
+    gain.gain.setValueAtTime(.22, startTime + 2.7);
+    gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 3);
+    oscillator.connect(gain).connect(context.destination);
+    oscillator.start(startTime);
+    oscillator.stop(startTime + 3);
   },
   checkReminders() {
     if (localStorage.getItem('dawaeiAlarmsEnabled') !== 'true') return;

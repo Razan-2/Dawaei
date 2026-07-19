@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>التذكيرات | دوائي</title>
   <style>
-    body{margin:0;background:#f5f7fa;color:#243746;font-family:'Segoe UI',Tahoma,sans-serif}.page{max-width:900px;margin:55px auto;padding:0 20px}h1{color:#0d3b66}.alarm-panel{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:18px;padding:17px 20px;background:#e7f6f3;border-radius:8px;color:#08665c}.alarm-panel p{margin:4px 0 0}.alarm-actions{display:flex;gap:8px;flex-wrap:wrap}.alarm-button{border:0;border-radius:7px;padding:11px 16px;background:#009688;color:#fff;font:inherit;font-weight:bold;cursor:pointer;white-space:nowrap}.test-button{background:#0d3b66}.list{display:grid;gap:14px}.item{background:#fff;border-radius:8px;padding:20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 5px 16px #0000000d}.item h2{font-size:19px;margin:0 0 6px;color:#0d3b66}.item p{margin:0;color:#667085}.toggle{appearance:none;width:48px;height:26px;background:#cbd5e1;border-radius:20px;position:relative;cursor:pointer}.toggle:after{content:'';width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:3px;right:3px;transition:.2s}.toggle:checked{background:#009688}.toggle:checked:after{right:25px}.empty{background:#fff;padding:30px;text-align:center;border-radius:8px;color:#667085}@media(max-width:560px){.alarm-panel{align-items:flex-start;flex-direction:column}.item{gap:15px}}
+    body{margin:0;background:#f5f7fa;color:#243746;font-family:'Segoe UI',Tahoma,sans-serif}.page{max-width:900px;margin:55px auto;padding:0 20px}h1{color:#0d3b66}.alarm-panel{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:18px;padding:17px 20px;background:#e7f6f3;border-radius:8px;color:#08665c}.alarm-panel p{margin:4px 0 0}.alarm-actions{display:flex;gap:8px;flex-wrap:wrap}.alarm-button{border:0;border-radius:7px;padding:11px 16px;background:#009688;color:#fff;font:inherit;font-weight:bold;cursor:pointer;white-space:nowrap}.list{display:grid;gap:14px}.item{background:#fff;border-radius:8px;padding:20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 5px 16px #0000000d}.item h2{font-size:19px;margin:0 0 6px;color:#0d3b66}.item p{margin:0;color:#667085}.toggle{appearance:none;width:48px;height:26px;background:#cbd5e1;border-radius:20px;position:relative;cursor:pointer}.toggle:after{content:'';width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:3px;right:3px;transition:.2s}.toggle:checked{background:#009688}.toggle:checked:after{right:25px}.empty{background:#fff;padding:30px;text-align:center;border-radius:8px;color:#667085}@media(max-width:560px){.alarm-panel{align-items:flex-start;flex-direction:column}.item{gap:15px}}
   </style>
 </head>
 <body>
@@ -14,7 +14,7 @@
     <h1>التذكيرات</h1>
     <section class="alarm-panel" aria-labelledby="alarm-heading">
       <div><strong id="alarm-heading">تنبيه بصوت المنبّه</strong><p id="alarm-status">فعّل التنبيه ليصدر صوت عند حلول موعد الدواء.</p></div>
-      <div class="alarm-actions"><button id="test-alarm" class="alarm-button test-button" type="button">اختبار الصوت</button><button id="enable-alarm" class="alarm-button" type="button">تفعيل التنبيه الصوتي</button></div>
+      <div class="alarm-actions"><button id="enable-alarm" class="alarm-button" type="button">تفعيل التنبيه الصوتي</button></div>
     </section>
     <div class="list" id="list"></div>
   </main>
@@ -23,7 +23,6 @@
     Dawaei.loadHeader();
     const list = document.getElementById('list');
     const alarmButton = document.getElementById('enable-alarm');
-    const testAlarmButton = document.getElementById('test-alarm');
     const alarmStatus = document.getElementById('alarm-status');
 
     function formatTime(time) {
@@ -45,17 +44,6 @@
         showAlarmStatus();
       } catch (error) {
         alarmStatus.textContent = 'تعذر تفعيل الصوت. تحقق من أذونات المتصفح ثم حاول مجددًا.';
-      }
-    });
-
-    testAlarmButton.addEventListener('click', async () => {
-      try {
-        await Dawaei.enableAlarms();
-        await Dawaei.playAlarm();
-        showAlarmStatus();
-        alarmStatus.textContent = 'تم تشغيل صوت اختبار المنبّه. ستصدر النغمة نفسها عند حلول الموعد.';
-      } catch (error) {
-        alarmStatus.textContent = 'تعذر تشغيل صوت الاختبار. تحقق من صوت الجهاز وأذونات المتصفح.';
       }
     });
 
