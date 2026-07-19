@@ -25,6 +25,13 @@
     const alarmButton = document.getElementById('enable-alarm');
     const alarmStatus = document.getElementById('alarm-status');
 
+    function formatTime(time) {
+      const [hourText, minute] = time.split(':');
+      const hour = Number(hourText);
+      const period = hour >= 12 ? 'م' : 'ص';
+      return `${hour % 12 || 12}:${minute} ${period}`;
+    }
+
     function showAlarmStatus() {
       const enabled = localStorage.getItem('dawaeiAlarmsEnabled') === 'true';
       alarmButton.textContent = enabled ? 'التنبيه الصوتي مفعّل' : 'تفعيل التنبيه الصوتي';
@@ -42,7 +49,7 @@
 
     function render() {
       const medicines = Dawaei.get('medicines');
-      list.innerHTML = medicines.length ? medicines.map(medicine => `<article class="item"><div><h2>${medicine.name}</h2><p>تذكير ${medicine.frequency} عند ${medicine.time}</p></div><input class="toggle" type="checkbox" data-id="${medicine.id}" ${medicine.enabled !== false ? 'checked' : ''} aria-label="تفعيل تذكير ${medicine.name}"></article>`).join('') : '<div class="empty">لا توجد تذكيرات بعد. أضف دواءً أولًا.</div>';
+      list.innerHTML = medicines.length ? medicines.map(medicine => `<article class="item"><div><h2>${medicine.name}</h2><p>تذكير ${medicine.frequency} عند ${formatTime(medicine.time)}</p></div><input class="toggle" type="checkbox" data-id="${medicine.id}" ${medicine.enabled !== false ? 'checked' : ''} aria-label="تفعيل تذكير ${medicine.name}"></article>`).join('') : '<div class="empty">لا توجد تذكيرات بعد. أضف دواءً أولًا.</div>';
       list.querySelectorAll('.toggle').forEach(toggle => toggle.addEventListener('change', () => {
         const medicines = Dawaei.get('medicines');
         const medicine = medicines.find(item => item.id === toggle.dataset.id);

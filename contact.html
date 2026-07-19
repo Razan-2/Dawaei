@@ -94,6 +94,26 @@ button:hover{
     background:#00796b;
 }
 
+button:disabled{
+    cursor:wait;
+    opacity:.7;
+}
+
+.send-status{
+    display:none;
+    margin-top:18px;
+    padding:13px;
+    border-radius:10px;
+    background:#e7f6f3;
+    color:#08665c;
+    text-align:center;
+}
+
+.send-status.error{
+    background:#fff1f0;
+    color:#b42318;
+}
+
 @media(max-width:768px){
 
 .page-content{
@@ -132,7 +152,7 @@ h1{
 أرسل استفسارك إلى دكتورك الخاص، وستصل الرسالة مباشرةً إلى البريد الإلكتروني.
 </p>
 
-<form id="doctor-contact-form" action="https://formsubmit.co/razanalqobti@gmail.com" method="POST">
+<form id="doctor-contact-form" action="https://formsubmit.co/ajax/razanalqobti@gmail.com" method="POST">
 
 <input type="hidden" name="_subject" value="استفسار جديد عبر موقع دوائي">
 <input type="hidden" name="_template" value="table">
@@ -157,11 +177,12 @@ name="message"
 placeholder="اكتب رسالتك هنا..."
 required></textarea>
 
-<button type="submit">
+<button id="send-button" type="submit">
 إرسال
 </button>
 
 </form>
+<div id="send-status" class="send-status" role="status" aria-live="polite"></div>
 
 </div>
 
@@ -170,6 +191,34 @@ required></textarea>
 <script src="app.js"></script>
 <script>
 Dawaei.loadHeader('header-container');
+const contactForm = document.getElementById('doctor-contact-form');
+const sendButton = document.getElementById('send-button');
+const sendStatus = document.getElementById('send-status');
+
+contactForm.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (!contactForm.reportValidity()) return;
+
+    sendButton.disabled = true;
+    try {
+        const response = await fetch(contactForm.action, {
+            method: 'POST',
+            body: new FormData(contactForm),
+            headers: { Accept: 'application/json' }
+        });
+        if (!response.ok) throw new Error('تعذر إرسال الرسالة');
+
+        contactForm.reset();
+        sendStatus.textContent = 'شكرًا لتواصلك معنا. سوف يتم الرد عليك في أقرب وقت ممكن.';
+        sendStatus.classList.remove('error');
+    } catch (error) {
+        sendStatus.textContent = 'تعذر إرسال الاستفسار حاليًا. يرجى المحاولة مرة أخرى.';
+        sendStatus.classList.add('error');
+    } finally {
+        sendStatus.style.display = 'block';
+        sendButton.disabled = false;
+    }
+});
 </script>
 
 </body>
