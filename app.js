@@ -73,11 +73,16 @@ const Dawaei = {
       await Notification.requestPermission();
     }
   },
-  playAlarm() {
+  async playAlarm() {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     if (!AudioContextClass) return;
     const context = this.alarmContext || (this.alarmContext = new AudioContextClass());
-    if (context.state === 'suspended') context.resume();
+    try {
+      if (context.state === 'suspended') await context.resume();
+    } catch (error) {
+      console.error('تعذر تشغيل صوت التنبيه.', error);
+      return;
+    }
 
     [0, .42, .84].forEach((offset, index) => {
       const oscillator = context.createOscillator();

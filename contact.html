@@ -101,17 +101,59 @@ button:disabled{
 
 .send-status{
     display:none;
-    margin-top:18px;
-    padding:13px;
-    border-radius:10px;
-    background:#e7f6f3;
-    color:#08665c;
+    position:fixed;
+    inset:0;
+    z-index:2000;
+    padding:20px;
+    background:rgba(13,59,102,.38);
+    align-items:center;
+    justify-content:center;
     text-align:center;
 }
 
-.send-status.error{
-    background:#fff1f0;
-    color:#b42318;
+.send-status.visible{
+    display:flex;
+}
+
+.success-card{
+    width:min(100%,430px);
+    padding:32px 26px;
+    border-radius:18px;
+    background:#fff;
+    color:#08665c;
+    box-shadow:0 20px 50px rgba(0,0,0,.22);
+}
+
+.balloons{
+    margin-bottom:12px;
+    font-size:42px;
+    letter-spacing:8px;
+    animation:float 1.5s ease-in-out infinite alternate;
+}
+
+.success-card h2{
+    margin:0 0 10px;
+    color:#0d3b66;
+}
+
+.success-card p{
+    margin:0;
+    color:#344054;
+}
+
+.close-status{
+    width:auto;
+    margin-top:22px;
+    padding:10px 28px;
+    font-size:16px;
+}
+
+.send-status.error .balloons{display:none}
+.send-status.error .success-card{color:#b42318}
+
+@keyframes float{
+    from{transform:translateY(0)}
+    to{transform:translateY(-9px)}
 }
 
 @media(max-width:768px){
@@ -182,7 +224,14 @@ required></textarea>
 </button>
 
 </form>
-<div id="send-status" class="send-status" role="status" aria-live="polite"></div>
+<div id="send-status" class="send-status" role="alertdialog" aria-modal="true" aria-labelledby="status-title" aria-live="polite">
+    <div class="success-card">
+        <div class="balloons" aria-hidden="true">🎈🎉🎈</div>
+        <h2 id="status-title">شكرًا لتواصلك معنا</h2>
+        <p id="status-message"></p>
+        <button id="close-status" class="close-status" type="button">حسنًا</button>
+    </div>
+</div>
 
 </div>
 
@@ -194,6 +243,13 @@ Dawaei.loadHeader('header-container');
 const contactForm = document.getElementById('doctor-contact-form');
 const sendButton = document.getElementById('send-button');
 const sendStatus = document.getElementById('send-status');
+const statusTitle = document.getElementById('status-title');
+const statusMessage = document.getElementById('status-message');
+const closeStatusButton = document.getElementById('close-status');
+
+closeStatusButton.addEventListener('click', () => {
+    sendStatus.classList.remove('visible');
+});
 
 contactForm.addEventListener('submit', async event => {
     event.preventDefault();
@@ -209,13 +265,15 @@ contactForm.addEventListener('submit', async event => {
         if (!response.ok) throw new Error('تعذر إرسال الرسالة');
 
         contactForm.reset();
-        sendStatus.textContent = 'شكرًا لتواصلك معنا. سوف يتم الرد عليك في أقرب وقت ممكن.';
+        statusTitle.textContent = 'شكرًا لتواصلك معنا';
+        statusMessage.textContent = 'تم إرسال استفسارك بنجاح. سوف يتم الرد عليك في أقرب وقت ممكن.';
         sendStatus.classList.remove('error');
     } catch (error) {
-        sendStatus.textContent = 'تعذر إرسال الاستفسار حاليًا. يرجى المحاولة مرة أخرى.';
+        statusTitle.textContent = 'تعذر إرسال الاستفسار';
+        statusMessage.textContent = 'يرجى المحاولة مرة أخرى.';
         sendStatus.classList.add('error');
     } finally {
-        sendStatus.style.display = 'block';
+        sendStatus.classList.add('visible');
         sendButton.disabled = false;
     }
 });
