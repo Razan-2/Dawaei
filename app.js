@@ -16,6 +16,19 @@ const Dawaei = {
       nav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => nav.classList.remove('active')));
     }).catch(error => console.error(error));
   },
+  loadFooter(containerId = 'footer') {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    fetch('footer.html').then(response => response.text()).then(markup => {
+      container.innerHTML = markup;
+      const topButton = container.querySelector('#topBtn');
+      if (!topButton) return;
+      const updateVisibility = () => { topButton.style.display = window.scrollY > 250 ? 'block' : 'none'; };
+      window.addEventListener('scroll', updateVisibility, { passive: true });
+      updateVisibility();
+      topButton.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    }).catch(error => console.error(error));
+  },
   get(key) { return JSON.parse(localStorage.getItem(key) || '[]'); },
   set(key, value) { localStorage.setItem(key, JSON.stringify(value)); },
   id() { return `${Date.now()}-${Math.random().toString(16).slice(2)}`; }

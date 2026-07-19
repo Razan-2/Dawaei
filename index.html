@@ -232,11 +232,11 @@ font-size:18px;
 
 <div class="buttons">
 
-<button class="btn primary">
+<button class="btn primary" id="start-btn" type="button">
 ابدأ الآن
 </button>
 
-<button class="btn secondary">
+<button class="btn secondary" id="learn-more-btn" type="button">
 اعرف المزيد
 </button>
 
@@ -245,7 +245,7 @@ font-size:18px;
 </div>
 
 </section>
-<section class="services">
+<section class="services" id="services">
 
 <h2 class="section-title">
 لماذا دوائي؟
@@ -290,10 +290,14 @@ font-size:18px;
 Dawaei.loadHeader();
 
 /* تحميل الفوتر */
-fetch("footer.html")
-.then(response => response.text())
-.then(data => {
-document.getElementById("footer").innerHTML = data;
+Dawaei.loadFooter();
+
+document.getElementById("start-btn").addEventListener("click", () => {
+window.location.href = "add-medicine.html";
+});
+
+document.getElementById("learn-more-btn").addEventListener("click", () => {
+document.getElementById("services").scrollIntoView({ behavior: "smooth" });
 });
 
 /* ظهور البطاقات عند التمرير */
