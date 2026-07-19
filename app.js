@@ -15,7 +15,10 @@ const Dawaei = {
         menuButton.setAttribute('aria-expanded', String(open));
       });
       nav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => nav.classList.remove('active')));
-      if (this.isLoggedIn() && accountLink) {
+      if (!this.isLoggedIn()) {
+        nav.hidden = true;
+        menuButton.hidden = true;
+      } else if (accountLink) {
         accountLink.textContent = 'تسجيل الخروج';
         accountLink.href = '#';
         accountLink.setAttribute('aria-label', 'تسجيل الخروج');
