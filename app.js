@@ -18,6 +18,7 @@ const Dawaei = {
       if (!this.isLoggedIn()) {
         nav.hidden = true;
         menuButton.hidden = true;
+        if (accountLink) accountLink.hidden = true;
       } else if (accountLink) {
         accountLink.textContent = 'تسجيل الخروج';
         accountLink.href = '#';
